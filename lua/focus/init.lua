@@ -82,7 +82,12 @@ M.setup = function(opts)
     if opts.should_check_for_focus_change then
         M.should_check_for_focus_change = opts.should_check_for_focus_change
     end
-    vim.keymap.set('n', '<leader>z', M.ToggleFocus, {})
+
+    vim.api.nvim_create_user_command("ToggleFocusMode", M.ToggleFocus, {})
+
+    if (opts.default_key_binding ~= false) or (opts.default_key_binding == nil)  then
+        vim.keymap.set('n', '<leader>z', ':ToggleFocusMode<CR>', {})
+    end
 end
 
 return M
