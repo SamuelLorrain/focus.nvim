@@ -43,7 +43,7 @@ M._fetch_infos = function()
     }
 end
 
-M.CreateFocusOn = function()
+M.focus_on = function()
     local info = M._fetch_infos()
     vim.cmd('tabnew')
     vim.api.nvim_set_current_buf(info.buffer_number)
@@ -56,7 +56,7 @@ M.CreateFocusOn = function()
     vim.api.nvim_win_set_cursor(M._focused_window, M._cursor_position)
 end
 
-M.FocusOff = function()
+M.focus_off = function()
     if M.should_check_for_focus_change then
         local focus_has_changed = M._focus_has_changed()
         if focus_has_changed == false then
@@ -69,21 +69,23 @@ M.FocusOff = function()
     M._reset_focus()
 end
 
-M.ToggleFocus = function()
+M.toggle_focus = function()
     if M._is_focus then
-        M.FocusOff()
+        M.focus_off()
     else
-        M.CreateFocusOn()
+        M.focus_on()
     end
 end
 
 M.setup = function(opts)
-    opts = opts or {}
+    opts = opts or {
+        default_key_binding = true
+    }
     if opts.should_check_for_focus_change then
         M.should_check_for_focus_change = opts.should_check_for_focus_change
     end
 
-    vim.api.nvim_create_user_command("ToggleFocusMode", M.ToggleFocus, {})
+    vim.api.nvim_create_user_command("ToggleFocusMode", M.toggle_focus, {})
 
     if (opts.default_key_binding ~= false) or (opts.default_key_binding == nil)  then
         vim.keymap.set('n', '<leader>z', ':ToggleFocusMode<CR>', {})
