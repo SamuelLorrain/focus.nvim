@@ -61,12 +61,15 @@ M.focus_off = function()
         local focus_has_changed = M._focus_has_changed()
         if focus_has_changed == false then
             vim.cmd('tabclose')
+            M._reset_focus()
+        else
+            M._reset_focus()
+            M.toggle_focus() -- recall toggle focus if the focus has changed
         end
     else
+        M._reset_focus()
         vim.cmd('tabclose')
     end
-
-    M._reset_focus()
 end
 
 M.toggle_focus = function()
